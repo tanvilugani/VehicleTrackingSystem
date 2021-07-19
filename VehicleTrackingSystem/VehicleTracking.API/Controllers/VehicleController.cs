@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using VehicleTracking.API.Models;
 using VehicleTracking.API.Repositories;
+using VehicleTracking.API.Utility;
 
 namespace VehicleTracking.API.Controllers
 {
@@ -26,16 +27,26 @@ namespace VehicleTracking.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> RegisterAsync(Vehicle vehicle)
         {
-            var existingVehicle = await _vehicleRepository.GetVehicleUsingVehicleIdNumber(vehicle.VehicleIdentificationNumber);
-
-            if(existingVehicle != null && existingVehicle.IsActive)
+            try
             {
-                return BadRequest("This vehicle is already mapped to a device.");
+                var existingVehicle = await _vehicleRepository.GetVehicleUsingVehicleIdNumber(vehicle.VehicleIdentificationNumber);
+
+                if (existingVehicle != null && existingVehicle.IsActive)
+                {
+                    return BadRequest(ErrorMessages.VehicleAlreadyMapped);
+                }
+
+                await _vehicleRepository.RegisterAsync(vehicle);
+
+                return Ok(vehicle.Id);
             }
-
-            await _vehicleRepository.RegisterAsync(vehicle);
-
-            return Ok(vehicle.Id);
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Exception while adding vehicle with VIN : {vehicle.VehicleIdentificationNumber}. Exception Message : {ex.Message}");
+                return BadRequest(ErrorMessages.VehicleRegistrationException);
+            }
+            
         }
     }
 }
