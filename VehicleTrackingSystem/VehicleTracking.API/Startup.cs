@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using VehicleTracking.API.Models;
 using VehicleTracking.API.Repositories;
 
@@ -23,10 +24,13 @@ namespace VehicleTracking.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwaggerGen();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllers();
             services.Configure<MongoDatabaseSettings>(Configuration.GetSection(nameof(MongoDatabaseSettings)));
             services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<MongoDatabaseSettings>>().Value);
             services.AddSingleton<IVehicleRepository, VehicleRepository>();
+            services.AddSingleton<ITrackerRepository, TrackerRepository>();
+            services.AddSingleton<ILocationTracker, LocationTracker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

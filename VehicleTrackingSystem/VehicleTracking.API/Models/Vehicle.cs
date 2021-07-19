@@ -2,16 +2,16 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
+using VehicleTracking.API.Utility;
 
 namespace VehicleTracking.API.Models
 {
     public class Vehicle
     {
-        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         [Required]
-        [RegularExpression("^([A-Z0-9]){17}$", ErrorMessage = "Enter a valid VIN number")]
+        [RegularExpression("^([A-Z0-9]){17}$", ErrorMessage = ErrorMessages.InvalidVin)]
         public string VehicleIdentificationNumber { get; set; }
         [Required]
         public string VehicleNumber { get; set; }

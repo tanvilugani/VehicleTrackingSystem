@@ -37,16 +37,16 @@ namespace VehicleTracking.API.Controllers
                 }
 
                 await _vehicleRepository.RegisterAsync(vehicle);
-
-                return Ok(vehicle.Id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     $"Exception while adding vehicle with VIN : {vehicle.VehicleIdentificationNumber}. Exception Message : {ex.Message}");
+               
                 return BadRequest(ErrorMessages.VehicleRegistrationException);
             }
-            
+
+            return Ok(vehicle.Id);
         }
     }
 }
