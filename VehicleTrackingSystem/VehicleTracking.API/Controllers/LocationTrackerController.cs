@@ -22,22 +22,22 @@ namespace VehicleTracking.API.Controllers
             _locationTracker = location ?? throw new ArgumentNullException(nameof(location));
         }
 
-        [HttpGet("{registrationId}", Name = "GetCurrentLocation")]
+        [HttpGet("{registrationId}")]
         [ProducesResponseType(typeof(Location), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Location>> GetAsync(string registrationId)
+        public async Task<ActionResult<string>> GetAsync(string registrationId)
         {
             try
             {
-                var location = await _locationTracker.GetCurrentLocationAsync(registrationId);
+                var locality = await _locationTracker.GetCurrentLocationAsync(registrationId);
 
-                if (location == null)
+                if (locality == null)
                 {
                     return NoContent();
                 }
 
-                return Ok(location);
+                return Ok(locality);
             }
             catch (Exception ex)
             {
@@ -70,18 +70,6 @@ namespace VehicleTracking.API.Controllers
                     $"Error while fetching locations for the registration ID {registrationId}. Exception : {ex.Message}");
                 return BadRequest(ErrorMessages.LocationFetchForDurationException);
             }
-        }
-
-        [HttpGet("{latitude:double}/{longitude:double}")]
-        public async Task<string> GetLocality(double latitude, double longitude)
-        {
-            var location = new Location()
-            {
-                Latitude = latitude,
-                Longitude = longitude
-            };
-
-            return await _locationTracker.GetLocality(location);
         }
 
         [HttpPost]

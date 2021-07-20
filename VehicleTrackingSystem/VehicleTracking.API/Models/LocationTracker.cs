@@ -23,11 +23,16 @@ namespace VehicleTracking.API.Models
             _trackerRepository = trackerRepository ?? throw new ArgumentNullException(nameof(trackerRepository));
         }
 
-        public async Task<Location> GetCurrentLocationAsync(string registrationId)
+        public async Task<string> GetCurrentLocationAsync(string registrationId)
         {
             var record = await _trackerRepository.GetCurrentRecordAsync(registrationId);
 
-            return record?.Location;
+            if (record != null)
+            {
+                return await GetLocality(record.Location);
+            }
+
+            return null;
         }
 
         public async Task<IList<Location>> GetLocationsForDurationAsync(string registrationId, DateTime startTime, DateTime endTime)
@@ -62,26 +67,35 @@ namespace VehicleTracking.API.Models
             }
         }
 
-        public async Task<string> GetLocality(Location location)
+        private async Task<string> GetLocality(Location location)
         {
-            var geoCodingApiUrl = 
-                string.Format(@"https://maps.googleapis.com/maps/api/geocode/json?latlng={0},{1}&result_type=sublocality_level_1&key={2}", 
-                location.Latitude, location.Longitude, _configuration.GetValue<string>("MapsApiKey"));
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, geoCodingApiUrl);
-
-
-            var response = await client.SendAsync(request);
-
-            if (response.StatusCode.Equals(HttpStatusCode.OK))
+            try
             {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var geoCodingApiUrl =
+                string.Format(@"https://maps.googleapis.com/maps/api/geocode/json?latlng={0},{1}&result_type=sublocality_level_1&key={2}",
+                location.Latitude, location.Longitude, _configuration.GetValue<string>("MapsApiKey"));
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, geoCodingApiUrl);
 
-                var data = JsonSerializer.Deserialize<GeoCodingResponse>(jsonResponse);
-                return data.Results[0].FormattedAddress;
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                    var data = JsonSerializer.Deserialize<GeoCodingResponse>(jsonResponse);
+                    return data?.Results[0]?.FormattedAddress;
+                }
+                else
+                {
+                    return null;
+                }
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while fetching locality for the coordinates {location.Latitude}, {location.Longitude}. Exception : {ex.Message}");
+                throw ex;
+            }
         }
     }
 }

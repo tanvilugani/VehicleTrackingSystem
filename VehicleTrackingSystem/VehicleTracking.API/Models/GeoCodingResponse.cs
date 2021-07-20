@@ -13,7 +13,6 @@ namespace VehicleTracking.API.Models
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
-       
     }
 
     public class Codes
@@ -43,7 +42,6 @@ namespace VehicleTracking.API.Models
         [JsonPropertyName("types")]
         public List<string> Types { get; set; }
     }
-
     public class AddressComponents
     {
         [JsonPropertyName("long_name")]
@@ -55,7 +53,6 @@ namespace VehicleTracking.API.Models
         [JsonPropertyName("types")]
         public List<string> Types { get; set; }
     }
-
     public class Geometry
     {
         
