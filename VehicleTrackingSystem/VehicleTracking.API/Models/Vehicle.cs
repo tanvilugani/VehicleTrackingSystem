@@ -16,7 +16,7 @@ namespace VehicleTracking.API.Models
         [Required]
         public string VehicleNumber { get; set; }
         public string Model { get; set; }
-        public DateTime YearOfManufacturing { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime RegisteredOn { get; set; }
         public bool IsActive { get; set; }
         [Required]

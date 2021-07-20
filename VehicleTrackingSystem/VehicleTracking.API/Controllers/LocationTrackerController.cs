@@ -22,7 +22,7 @@ namespace VehicleTracking.API.Controllers
             _locationTracker = location ?? throw new ArgumentNullException(nameof(location));
         }
 
-        [HttpGet("{registrationId}")]
+        [HttpGet("{registrationId}", Name = "GetCurrentLocation")]
         [ProducesResponseType(typeof(Location), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -47,41 +47,53 @@ namespace VehicleTracking.API.Controllers
             }
         }
 
-        [HttpGet("{registrationId}/{startTime}/{endTime}")]
+        [HttpGet("locations/{registrationId}")]
         [ProducesResponseType(typeof(IList<Location>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IList<Location>>> GetForDurationAsync(string registrationId, DateTime startTime, DateTime endTime)
+        public async Task<ActionResult<IList<Location>>> GetLocationForDurationAsync(string registrationId, DateTime startTime, DateTime endTime)
         {
             try
             {
-                var location = await _locationTracker.GetLocationsDuringDurationAsync(registrationId, startTime, endTime);
+                var locations = await _locationTracker.GetLocationsForDurationAsync(registrationId, startTime, endTime);
 
-                if (location == null || location.Count == 0)
+                if (locations == null || locations.Count == 0)
                 {
                     return NoContent();
                 }
 
-                return Ok(location);
+                return Ok(locations);
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     $"Error while fetching locations for the registration ID {registrationId}. Exception : {ex.Message}");
-                return BadRequest(ErrorMessages.LocationFetchForDurationException); 
+                return BadRequest(ErrorMessages.LocationFetchForDurationException);
             }
+        }
+
+        [HttpGet("{latitude:double}/{longitude:double}")]
+        public async Task<string> GetLocality(double latitude, double longitude)
+        {
+            var location = new Location()
+            {
+                Latitude = latitude,
+                Longitude = longitude
+            };
+
+            return await _locationTracker.GetLocality(location);
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PostAsync(TrackingRecord record)
+        public async Task<ActionResult<TrackingRecord>> PostAsync(TrackingRecord record)
         {
             try
             {
                 await _locationTracker.AddLocationAsync(record);
 
-                return Ok();
+                return Ok(record);
             }
             catch (Exception ex)
             {
