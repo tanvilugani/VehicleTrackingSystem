@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{34
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.API", "VehicleTracking.API\VehicleTracking.API.csproj", "{EB7BA5C9-F21A-4D5D-9050-FC5F2672D165}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{CC846909-86CA-4096-8CF1-E17E633A27FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicle.API.Tests", "Vehicle.API.Tests\Vehicle.API.Tests.csproj", "{F7FEA1C4-48DE-4A6D-97E9-07BB16C55616}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +21,17 @@ Global
 		{EB7BA5C9-F21A-4D5D-9050-FC5F2672D165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB7BA5C9-F21A-4D5D-9050-FC5F2672D165}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB7BA5C9-F21A-4D5D-9050-FC5F2672D165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7FEA1C4-48DE-4A6D-97E9-07BB16C55616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7FEA1C4-48DE-4A6D-97E9-07BB16C55616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7FEA1C4-48DE-4A6D-97E9-07BB16C55616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7FEA1C4-48DE-4A6D-97E9-07BB16C55616}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB7BA5C9-F21A-4D5D-9050-FC5F2672D165} = {34522DFB-AF5B-40BF-A231-8D7BF6C56832}
+		{F7FEA1C4-48DE-4A6D-97E9-07BB16C55616} = {CC846909-86CA-4096-8CF1-E17E633A27FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ABE9A511-C525-42D6-AB98-AD0B122F5D4E}

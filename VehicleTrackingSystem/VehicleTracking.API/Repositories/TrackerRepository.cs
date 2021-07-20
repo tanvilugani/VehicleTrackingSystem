@@ -33,7 +33,7 @@ namespace VehicleTracking.API.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error while fetching data for the record with registration Id {registrationId}. Exception : {ex.Message}");
+                _logger.LogError($"Error while fetching data for the record with registration Id {registrationId}", ex.Message);
                 throw ex;
             }
         }
@@ -50,7 +50,7 @@ namespace VehicleTracking.API.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error while fetching data for the record with registration Id {registrationId}. Exception : {ex.Message}");
+                _logger.LogError($"Error while fetching data for the record with registration Id {registrationId}.", ex.Message);
                 throw ex;
             }
         }
@@ -63,7 +63,7 @@ namespace VehicleTracking.API.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error while saving data for the record {record.RegistrationId}. Exception : {ex.Message}");
+                _logger.LogError($"Error while saving data for the record {record.RegistrationId}.", ex.Message);
                 throw ex;
             }
         }

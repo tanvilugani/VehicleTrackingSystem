@@ -41,7 +41,7 @@ namespace VehicleTracking.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(
-                    $"Exception while adding vehicle with VIN : {vehicle.VehicleIdentificationNumber}. Exception Message : {ex.Message}");
+                    $"Exception while adding vehicle with VIN : {vehicle.VehicleIdentificationNumber}.", ex.Message);
                
                 return BadRequest(ErrorMessages.VehicleRegistrationException);
             }

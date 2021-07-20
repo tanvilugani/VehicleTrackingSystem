@@ -12,9 +12,9 @@ namespace VehicleTracking.API.Models
 {
     public class LocationTracker : ILocationTracker
     {
-        private readonly ITrackerRepository _trackerRepository;
         private readonly IConfiguration _configuration;
         private readonly ILogger<LocationTracker> _logger;
+        private readonly ITrackerRepository _trackerRepository;
 
         public LocationTracker(IConfiguration configuration, ILogger<LocationTracker> logger, ITrackerRepository trackerRepository)
         {
@@ -49,7 +49,7 @@ namespace VehicleTracking.API.Models
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error while fetching locations for a duration for vehicle with registration Id {registrationId}. Exception : {ex.Message}");
+                _logger.LogError($"Error while fetching locations for a duration for vehicle with registration Id {registrationId}.", ex.Message);
                 throw ex;
             }
         }
@@ -62,7 +62,7 @@ namespace VehicleTracking.API.Models
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error while adding location for the vehicle with registration Id {record.RegistrationId}. Exception : {ex.Message}");
+                _logger.LogError($"Error while adding location for the vehicle with registration Id {record.RegistrationId}.", ex.Message);
                 throw ex;
             }
         }
@@ -93,7 +93,7 @@ namespace VehicleTracking.API.Models
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error while fetching locality for the coordinates {location.Latitude}, {location.Longitude}. Exception : {ex.Message}");
+                _logger.LogError($"Error while fetching locality for the coordinates {location.Latitude}, {location.Longitude}.", ex.Message);
                 throw ex;
             }
         }
