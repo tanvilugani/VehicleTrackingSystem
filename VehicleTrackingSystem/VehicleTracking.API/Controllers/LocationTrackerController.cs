@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,6 +27,7 @@ namespace VehicleTracking.API.Controllers
         [ProducesResponseType(typeof(Location), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "administrator")]
         public async Task<ActionResult<string>> GetAsync(string registrationId)
         {
             try
@@ -51,6 +53,7 @@ namespace VehicleTracking.API.Controllers
         [ProducesResponseType(typeof(IList<Location>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "administrator")]
         public async Task<ActionResult<IList<Location>>> GetLocationForDurationAsync(string registrationId, DateTime startTime, DateTime endTime)
         {
             try

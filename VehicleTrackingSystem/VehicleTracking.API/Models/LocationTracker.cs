@@ -25,14 +25,22 @@ namespace VehicleTracking.API.Models
 
         public async Task<string> GetCurrentLocationAsync(string registrationId)
         {
-            var record = await _trackerRepository.GetCurrentRecordAsync(registrationId);
-
-            if (record != null)
+            try
             {
-                return await GetLocality(record.Location);
-            }
+                var record = await _trackerRepository.GetCurrentRecordAsync(registrationId);
 
-            return null;
+                if (record != null)
+                {
+                    return await GetLocality(record.Location);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while fetching current location for vehicle with registration Id {registrationId}.", ex.Message);
+                throw ex;
+            }
         }
 
         public async Task<IList<Location>> GetLocationsForDurationAsync(string registrationId, DateTime startTime, DateTime endTime)
@@ -84,11 +92,21 @@ namespace VehicleTracking.API.Models
                     var jsonResponse = await response.Content.ReadAsStringAsync();
 
                     var data = JsonSerializer.Deserialize<GeoCodingResponse>(jsonResponse);
-                    return data?.Results[0]?.FormattedAddress;
+                    
+                    if(data?.Results !=null && data?.Results.Count > 0)
+                    {
+                        var address = data.Results[0].FormattedAddress;
+
+                        return address;
+                    }
+                    else
+                    {
+                        return "Invalid data";
+                    }
                 }
                 else
                 {
-                    return null;
+                    throw new Exception(message : $"Error while sending request to the Google Map API. Status Code : {response.StatusCode}");
                 }
             }
             catch (Exception ex)

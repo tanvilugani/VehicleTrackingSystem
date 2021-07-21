@@ -1,9 +1,13 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using VehicleTracking.API.Models;
 using VehicleTracking.API.Repositories;
 
@@ -28,6 +32,39 @@ namespace VehicleTracking.API
             services.AddSingleton<IVehicleRepository, VehicleRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<ILocationTracker, LocationTracker>();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+
+                o.Authority = @"http://127.0.0.1:8080/auth/realms/Vehicel%20Tracking%20System/";
+                o.Audience = "TrackingSystem";
+                o.RequireHttpsMetadata = false;
+                o.Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = c =>
+                    {
+                        c.NoResult();
+                        c.Response.StatusCode = 500;
+                        c.Response.ContentType = "text/plain";
+                        return c.Response.WriteAsync(c.Exception.ToString());
+                    }
+                };
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    //ValidIssuer = jwtTokenConfig.Issuer,
+                    ValidateIssuerSigningKey = false,
+                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtTokenConfig.Secret)),
+                    //ValidAudience = jwtTokenConfig.Audience,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(1)
+                };
+            });
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +82,8 @@ namespace VehicleTracking.API
             });
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
