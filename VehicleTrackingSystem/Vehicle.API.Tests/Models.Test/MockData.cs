@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using VehicleTracking.API.Models;
 
 namespace Vehicle.API.Tests.Models.Test
@@ -24,7 +23,6 @@ namespace Vehicle.API.Tests.Models.Test
                 Location = new Location() { Latitude = 65.4555, Longitude = 20.1223 },
                 Time = new DateTime(2021, 7, 4)
             },
-
         };
     }
 }

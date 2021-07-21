@@ -4,10 +4,8 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using VehicleTracking.API.Models;
+using VehicleTracking.API.Handlers;
 using VehicleTracking.API.Repositories;
 
 namespace Vehicle.API.Tests.Models.Test

@@ -6,9 +6,10 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using VehicleTracking.API.Models;
 using VehicleTracking.API.Repositories;
 
-namespace VehicleTracking.API.Models
+namespace VehicleTracking.API.Handlers
 {
     public class LocationTracker : ILocationTracker
     {
@@ -92,8 +93,8 @@ namespace VehicleTracking.API.Models
                     var jsonResponse = await response.Content.ReadAsStringAsync();
 
                     var data = JsonSerializer.Deserialize<GeoCodingResponse>(jsonResponse);
-                    
-                    if(data?.Results !=null && data?.Results.Count > 0)
+
+                    if (data?.Results != null && data?.Results.Count > 0)
                     {
                         var address = data.Results[0].FormattedAddress;
 
@@ -106,7 +107,7 @@ namespace VehicleTracking.API.Models
                 }
                 else
                 {
-                    throw new Exception(message : $"Error while sending request to the Google Map API. Status Code : {response.StatusCode}");
+                    throw new Exception(message: $"Error while sending request to the Google Map API. Status Code : {response.StatusCode}");
                 }
             }
             catch (Exception ex)

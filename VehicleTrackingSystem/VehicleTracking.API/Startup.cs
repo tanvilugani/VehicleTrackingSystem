@@ -62,8 +62,8 @@ namespace VehicleTracking.API
                     //IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtTokenConfig.Secret)),
                     //ValidAudience = jwtTokenConfig.Audience,
                     ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(1)
+                    //ValidateLifetime = true,
+                    //ClockSkew = TimeSpan.FromMinutes(1)
                 };
             });
             services.AddAuthorization();

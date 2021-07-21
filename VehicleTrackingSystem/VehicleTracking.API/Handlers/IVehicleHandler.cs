@@ -7,8 +7,8 @@ namespace VehicleTracking.API.Handlers
 {
     public interface IVehicleHandler
     {
-        public Task<List<Vehicle>> GetVehiclesAsync();
+        Task<List<Vehicle>> GetVehiclesAsync();
 
-        public Task<(bool, string)> RegisterVehicleAsync(Vehicle vehicle);
+        Task<(bool, string)> RegisterVehicleAsync(Vehicle vehicle);
     }
 }

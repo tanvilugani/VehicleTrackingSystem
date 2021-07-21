@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VehicleTracking.API.Handlers;
 using VehicleTracking.API.Models;
 using VehicleTracking.API.Utility;
 
