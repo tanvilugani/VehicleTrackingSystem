@@ -1,9 +1,18 @@
 ﻿namespace VehicleTracking.API.Utility
 {
-    public class ErrorMessages
+    public class Messages
     {
         public const string VehicleAlreadyMapped =
-            "This vehicle is already mapped to a device. Please disconnect from previous device and then register with new device.";
+            "Vehicle is already mapped to a device.";
+
+        public const string DeviceAlreadyMapped =
+            "Device is already mapped to a vehicle.";
+
+        public const string VehicleRegisteredSuccessfully =
+            "Vehicle Registered Successfully.";
+        
+        public const string VehiclesFetchException =
+            "An error occurred while fetching the vehicles.";
 
         public const string VehicleRegistrationException =
             "An error occurred while registering the vehicle.";

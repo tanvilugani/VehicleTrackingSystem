@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using VehicleTracking.API.Handlers;
 using VehicleTracking.API.Models;
 using VehicleTracking.API.Repositories;
 
@@ -30,6 +31,7 @@ namespace VehicleTracking.API
             services.Configure<MongoDatabaseSettings>(Configuration.GetSection(nameof(MongoDatabaseSettings)));
             services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<MongoDatabaseSettings>>().Value);
             services.AddSingleton<IVehicleRepository, VehicleRepository>();
+            services.AddSingleton<IVehicleHandler, VehicleHandler>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<ILocationTracker, LocationTracker>();
             services.AddAuthentication(options =>

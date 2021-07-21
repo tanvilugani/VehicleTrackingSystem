@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VehicleTracking.API.Models;
 
@@ -18,6 +19,19 @@ namespace VehicleTracking.API.Repositories
 
             _vehicles = database.GetCollection<Vehicle>(configuration.GetValue<string>("MongoDatabaseSettings:VehicleCollection"));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public async Task<List<Vehicle>> GetVehiclesAsync()
+        {
+            try
+            {
+                return await _vehicles.Find(vehicle => true).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while fetching vehicles.");
+                throw ex;
+            }
         }
 
         public async Task<Vehicle> GetAsync(string id)
@@ -47,7 +61,48 @@ namespace VehicleTracking.API.Repositories
             }
         }
 
-        public async Task RegisterAsync(Vehicle vehicle)
+        public async Task<bool> IsDeviceMapped(string deviceId)
+        {
+            try
+            {
+                var result = await _vehicles.Find(vehicle => vehicle.MappedDeviceId.Equals(deviceId) && vehicle.IsActive == true).FirstOrDefaultAsync();
+
+                if (result != null)
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while fetching if device is mapped or not.", ex.Message);
+                throw ex;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> IsVehicleMapped(string vehicleIdNumber)
+        {
+            try
+            {
+                var result = await _vehicles.Find(vehicle => vehicle.VehicleIdentificationNumber.Equals(vehicleIdNumber) && vehicle.IsActive == true)
+                    .FirstOrDefaultAsync();
+
+                if (result != null)
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while fetching if vehicle is mapped or not.", ex.Message);
+                throw ex;
+            }
+
+            return false;
+        }
+
+        public async Task RegisterVehicleAsync(Vehicle vehicle)
         {
             try
             {

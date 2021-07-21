@@ -45,7 +45,7 @@ namespace VehicleTracking.API.Controllers
             {
                 _logger.LogError(
                     $"Error while fetching location for the registration ID {registrationId}.", ex.Message);
-                return BadRequest(ErrorMessages.CurrentLocationFetchException); ;
+                return BadRequest(Messages.CurrentLocationFetchException); ;
             }
         }
 
@@ -71,7 +71,7 @@ namespace VehicleTracking.API.Controllers
             {
                 _logger.LogError(
                     $"Error while fetching locations for the registration ID {registrationId}.", ex.Message);
-                return BadRequest(ErrorMessages.LocationFetchForDurationException);
+                return BadRequest(Messages.LocationFetchForDurationException);
             }
         }
 
@@ -90,7 +90,7 @@ namespace VehicleTracking.API.Controllers
             {
                 _logger.LogError(
                     $"Error while storing location for the registration ID {record.RegistrationId}.", ex.Message);
-                return BadRequest(ErrorMessages.LocationStoreException);
+                return BadRequest(Messages.LocationStoreException);
             }
         }
     }

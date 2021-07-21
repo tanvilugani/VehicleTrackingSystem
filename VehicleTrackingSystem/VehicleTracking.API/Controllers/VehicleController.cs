@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using VehicleTracking.API.Handlers;
 using VehicleTracking.API.Models;
-using VehicleTracking.API.Repositories;
 using VehicleTracking.API.Utility;
 
 namespace VehicleTracking.API.Controllers
@@ -14,12 +15,32 @@ namespace VehicleTracking.API.Controllers
     public class VehicleController : ControllerBase
     {
         private readonly ILogger<VehicleController> _logger;
-        private readonly IVehicleRepository _vehicleRepository;
+        private readonly IVehicleHandler _vehicleHandler;
 
-        public VehicleController(ILogger<VehicleController> logger, IVehicleRepository vehicleRepository)
+        public VehicleController(ILogger<VehicleController> logger, IVehicleHandler vehicleHandler)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _vehicleRepository = vehicleRepository ?? throw new ArgumentNullException(nameof(vehicleRepository));
+            _vehicleHandler = vehicleHandler ?? throw new ArgumentNullException(nameof(vehicleHandler));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<Vehicle>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<Vehicle>>> GetAsync()
+        {
+            try
+            {
+                var vehicles = await _vehicleHandler.GetVehiclesAsync();
+
+                return Ok(vehicles);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Exception while fetching vehicles.", ex.Message);
+
+                return BadRequest(Messages.VehiclesFetchException);
+            }
         }
 
         [HttpPost]
@@ -29,24 +50,22 @@ namespace VehicleTracking.API.Controllers
         {
             try
             {
-                var existingVehicle = await _vehicleRepository.GetVehicleUsingVehicleIdNumber(vehicle.VehicleIdentificationNumber);
+                var result = await _vehicleHandler.RegisterVehicleAsync(vehicle);
 
-                if (existingVehicle != null && existingVehicle.IsActive)
+                if (!result.Item1)
                 {
-                    return BadRequest(ErrorMessages.VehicleAlreadyMapped);
+                    return BadRequest(result.Item2);
                 }
-
-                await _vehicleRepository.RegisterAsync(vehicle);
+                    
+                return Ok(vehicle.Id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     $"Exception while adding vehicle with VIN : {vehicle.VehicleIdentificationNumber}.", ex.Message);
                
-                return BadRequest(ErrorMessages.VehicleRegistrationException);
+                return BadRequest(Messages.VehicleRegistrationException);
             }
-
-            return Ok(vehicle.Id);
         }
     }
 }
